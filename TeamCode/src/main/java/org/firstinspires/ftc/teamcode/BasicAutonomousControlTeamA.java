@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 // Anthony, 8/28/2024
 // This code was copied from RobotAutoDriveByTime_Linear in the FTC SDK samples and modified
 // to have four motors (for mecanum drive) and for the Cyber Tiger robot motor names
-@Autonomous(name="Cyber Tigers: Basic Autonomous", group="Robot")
-public class BasicAutonomousControl extends LinearOpMode {
+@Autonomous(name="Cyber Tigers: Basic Autonomous A", group="Robot")
+public class BasicAutonomousControlTeamA extends LinearOpMode {
 
     /* Declare OpMode members. */
     private DcMotor frontLeftMotor;
@@ -42,39 +42,21 @@ public class BasicAutonomousControl extends LinearOpMode {
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
         // Step 1:  Drive forward for 1 seconds
-        frontLeftMotor.setPower(FORWARD_SPEED);
-        backLeftMotor.setPower(FORWARD_SPEED);
-        frontRightMotor.setPower(FORWARD_SPEED);
-        backRightMotor.setPower(FORWARD_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.0)) {
-            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
+        driveRobotForward(FORWARD_SPEED, 1.0);
 
-        // Step 2:  Spin left for 0.5 seconds
-        frontLeftMotor.setPower(-TURN_SPEED);
-        backLeftMotor.setPower(-TURN_SPEED);
-        frontRightMotor.setPower(TURN_SPEED);
-        backRightMotor.setPower(TURN_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 0.5)) {
-            telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
+        // Step 2: Drive backward for 1 seconds
+        driveRobotBackward(FORWARD_SPEED, 0.4);
 
-        // Step 3:  Drive Backward for 1 Second
-        frontLeftMotor.setPower(-FORWARD_SPEED);
-        backLeftMotor.setPower(-FORWARD_SPEED);
-        frontRightMotor.setPower(-FORWARD_SPEED);
-        backRightMotor.setPower(-FORWARD_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.0)) {
-            telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
+        // Step 3: Spin right
+        spinRobotRight(TURN_SPEED, 0.8);
 
-        // Step 4:  Stop
+        driveRobotForward(FORWARD_SPEED,1.0);
+
+        strafeRobotLeft(FORWARD_SPEED, 0.5);
+
+        driveRobotForward(FORWARD_SPEED, 0.9);
+
+        // Step 7:  Stop
         frontLeftMotor.setPower(0);
         backLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
@@ -84,4 +66,37 @@ public class BasicAutonomousControl extends LinearOpMode {
         telemetry.update();
         sleep(1000);
     }
+
+    private void driveRobot(double frontLeftSpeed, double backLeftSpeed, double frontRightSpeed,
+                            double backRightSpeed, double runtimeSeconds) {
+        frontLeftMotor.setPower(frontLeftSpeed);
+        frontRightMotor.setPower(frontRightSpeed);
+        backLeftMotor.setPower(backLeftSpeed);
+        backRightMotor.setPower(backRightSpeed);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < runtimeSeconds)) {
+            telemetry.addData("Path", "Moved:%4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+    }
+    private void driveRobotForward(double speed, double runtimeSeconds) {
+        driveRobot(speed, speed, speed, speed, runtimeSeconds);
+
+    }
+    private void driveRobotBackward(double speed, double runtimeSeconds) {
+        driveRobot(-speed,-speed,-speed,-speed,runtimeSeconds);
+
+    }
+    private void spinRobotLeft(double speed, double runtimeSeconds) {
+        driveRobot(-speed,-speed,speed,speed,runtimeSeconds);
+
+    }
+
+    private void spinRobotRight(double speed, double runtimeSeconds){
+        driveRobot(speed,-speed,speed,-speed,runtimeSeconds);
+    }
+    private void strafeRobotLeft(double speed, double runtimeSeconds){
+        driveRobot(speed,speed, speed, speed, runtimeSeconds);
+    }
+
 }
