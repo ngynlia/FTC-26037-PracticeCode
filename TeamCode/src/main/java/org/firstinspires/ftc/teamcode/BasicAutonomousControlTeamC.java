@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // Anthony, 8/28/2024
@@ -17,6 +18,8 @@ public class BasicAutonomousControlTeamC extends LinearOpMode {
     private DcMotor frontRightMotor;
     private DcMotor backRightMotor;
 
+    private NormalizedColorSensor colorSensor;
+
     private ElapsedTime     runtime = new ElapsedTime();
 
     static final double     FORWARD_SPEED = 0.6;
@@ -28,6 +31,8 @@ public class BasicAutonomousControlTeamC extends LinearOpMode {
         backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+
+        colorSensor=hardwareMap.get(NormalizedColorSensor.class,"colorV3");
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -52,9 +57,9 @@ public class BasicAutonomousControlTeamC extends LinearOpMode {
 
         driveRobotForward(FORWARD_SPEED, 1.5);
 
-        strafeRobotLeft(FORWARD_SPEED, 0.4);
+        strafeRobotLeft(FORWARD_SPEED, 0.8);
 
-        driveRobotForward(FORWARD_SPEED, 1.0);
+        driveRobotForward(FORWARD_SPEED, 1.2);
 
         // Step 4:  Stop
         frontLeftMotor.setPower(0);
@@ -73,7 +78,7 @@ public class BasicAutonomousControlTeamC extends LinearOpMode {
                              double backRightSpeed, double runtimeSeconds){
         frontLeftMotor.setPower(frontLeftSpeed);
         backLeftMotor.setPower(backLeftSpeed);
-        frontRightMotor.setPower(backRightSpeed);
+        frontRightMotor.setPower(frontRightSpeed);
         backRightMotor.setPower(backRightSpeed);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < runtimeSeconds)) {
