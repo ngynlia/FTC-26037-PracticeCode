@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // Anthony, 8/28/2024
@@ -17,6 +18,9 @@ public class BasicAutonomousControlTeamB extends LinearOpMode {
     private DcMotor frontRightMotor;
     private DcMotor backRightMotor;
 
+
+    private NormalizedColorSensor colorSensor;
+
     private ElapsedTime     runtime = new ElapsedTime();
 
     static final double     FORWARD_SPEED = 0.6;
@@ -28,6 +32,7 @@ public class BasicAutonomousControlTeamB extends LinearOpMode {
         backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
         backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+colorSensor = hardwareMap.get(NormalizedColorSensor.class, "colorV3");
 
         frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -42,10 +47,10 @@ public class BasicAutonomousControlTeamB extends LinearOpMode {
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
         // Step 1:  Drive forward for 1 seconds
-        driveRobotForward(FORWARD_SPEED, 1.0);
+        // driveUntilColorDetected();
 
-        // Step 2:  Spin left for 0.5 seconds
-        driveRobotBackward(FORWARD_SPEED, 0.7);
+        // Step 2:  Drive backward for 0.5 seconds
+        driveRobotBackward(FORWARD_SPEED, 0.5);
 
         // Step 3:  Drive Backward for 1 Second
         spinRobotRight(TURN_SPEED, 0.75);
@@ -76,6 +81,23 @@ public class BasicAutonomousControlTeamB extends LinearOpMode {
         }
     }
 
+    private void driveUntilColorDetected(int colorToDetect, double frontLeftSpeed, double backLeftSpeed, double frontRightSpeed, double backRightSpeed, double runtimeSeconds) {
+        frontLeftMotor.setPower(frontLeftSpeed);
+        backLeftMotor.setPower(backLeftSpeed);
+        frontRightMotor.setPower(frontRightSpeed);
+        backRightMotor.setPower(backRightSpeed);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < runtimeSeconds)) {
+            telemetry.addData("Path", "Moved:%4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+
+            if (getCurrentlyDetectedColor() == colorToDetect) {
+                break;
+            }
+
+        }
+    }
+
     private void driveRobotForward(double speed, double runtimeSeconds) {
         driveRobot(speed, speed, speed, speed, runtimeSeconds);
     }
@@ -94,4 +116,19 @@ public class BasicAutonomousControlTeamB extends LinearOpMode {
     private void strafeRobotLeft(double speed, double runtimeSeconds) {
         driveRobot(-speed, speed, speed, -speed, runtimeSeconds);
     }
+    private int getCurrentlyDetectedColor(){
+        final float[] hsvValues = new float[3];
+        if (hsvValues[0] < 10){
+            return 1;
+
+        }
+        if ((hsvValues[0] > 160) && (hsvValues[0] < 260)) {
+            return 2;
+
+        }
+        return 0;
+
+    }
+
+;
 }
