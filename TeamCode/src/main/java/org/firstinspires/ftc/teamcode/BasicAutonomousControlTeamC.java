@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // Anthony, 8/28/2024
@@ -74,6 +77,7 @@ public class BasicAutonomousControlTeamC extends LinearOpMode {
         sleep(1000);
     }
 
+
     private void driveRobot (double frontLeftSpeed, double backLeftSpeed, double frontRightSpeed,
                              double backRightSpeed, double runtimeSeconds){
         frontLeftMotor.setPower(frontLeftSpeed);
@@ -104,6 +108,37 @@ public class BasicAutonomousControlTeamC extends LinearOpMode {
     }
     private void strafeRobotLeft (double speed, double runtimeSeconds) {
         driveRobot(-speed, speed, speed, -speed, runtimeSeconds);
+    }
+    private int getCurrentlyDetectedColor() {
+        final float[] hsvValues = new float[3];
+
+        // Get the normalized colors from the sensor
+        NormalizedRGBA colors = colorSensor.getNormalizedColors();
+
+        // Update the hsvValues array by passing it to Color.colorToHSV ()
+        Color.colorToHSV(colors.toColor(), hsvValues);
+        if (hsvValues[0] < 10) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    private void driveUntilColorDected(int colorToDetect,double frontLeftSpeed, double backLeftSpeed, double frontRightSpeed,
+                             double backRightSpeed, double runtimeSeconds){
+        frontLeftMotor.setPower(frontLeftSpeed);
+        backLeftMotor.setPower(backLeftSpeed);
+        frontRightMotor.setPower(frontRightSpeed);
+        backRightMotor.setPower(backRightSpeed);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < runtimeSeconds)) {
+            telemetry.addData("Path", "Moved: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+
+            if(getCurrentlyDetectedColor()==colorToDetect) {
+                break;
+            }
+        }
     }
 
 }
