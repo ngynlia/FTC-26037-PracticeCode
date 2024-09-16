@@ -46,18 +46,19 @@ public class BasicAutonomousControlTeamB extends LinearOpMode {
         waitForStart();
 
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
-driveUntilColorDetected(2,0.4,0.4,0.4,0.4,3);
+        driveUntilColorDetected(2,0.4,0.4,0.4,0.4,3);
         // Step 1:  Drive forward for 1 seconds
 
 
         // Step 2:  Spin left for 0.5 seconds
-        driveRobotBackward(FORWARD_SPEED, 0.6);
+        driveRobotBackward(FORWARD_SPEED, 0.52);
 
         // Step 3:  Drive Backward for 1 Second
         spinRobotRight(TURN_SPEED, 0.75);
-        driveRobotForward(FORWARD_SPEED, 1.5);
-        strafeRobotLeft(FORWARD_SPEED, 1.0);
-        driveRobotForward(FORWARD_SPEED, 1.0);
+        driveRobotForward(FORWARD_SPEED, 1.7);
+        strafeRobotLeft(FORWARD_SPEED, 0.8);
+        driveUntilColorDetected(2,0.4,0.4,0.4,0.4,3);
+        driveRobotForward(0.4, 0.2);
 
         // Step 4:  Stop
         frontLeftMotor.setPower(0);
