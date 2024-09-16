@@ -135,9 +135,9 @@ public class BasicAutonomousControlTeamC extends LinearOpMode {
             telemetry.addData("Path", "Moved: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
 
-            if(getCurrentlyDetectedColor()==colorToDetect){
+            if(getCurrentlyDetectedColor()==colorToDetect) {
                 break;
-
+            }
         }
     }
 
